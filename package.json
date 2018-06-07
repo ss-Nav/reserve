@@ -1,0 +1,14 @@
+{
+  "name": "reditreserve",
+  "version": "1.0.0",
+  "description": "reserve checking app",
+  "main": "app.js",
+  "scripts": {
+    "start": "nodemon -e css,ejs,js,json app.js"
+  },
+  "author": "shishan",
+  "license": "ISC",
+  "devDependencies": {
+    "nodemon": "^1.17.5"
+  }
+}
