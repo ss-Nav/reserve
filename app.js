@@ -1,9 +1,9 @@
-const express = require('express');
-const exphbs = require('express-handlebars');
-const path = require('path');
-const bodyParser = require('body-parser');
-const methodOverride = require('method-override');
-const redis = require('redis');
+var express = require('express');
+var exphbs = require('express-handlebars');
+var path = require('path');
+var bodyParser = require('body-parser');
+var methodOverride = require('method-override');
+var redis = require('redis');
 
 process.env['REDISCACHEHOSTNAME']='Reserve.redis.cache.windows.net';
 process.env['REDISCACHEKEY']='CuXrxyeDtPr80qkwgCUFhOvHWBbyyb+IVcSrrTKlbBs=';
@@ -11,7 +11,7 @@ process.env['REDISCACHEKEY']='CuXrxyeDtPr80qkwgCUFhOvHWBbyyb+IVcSrrTKlbBs=';
 
 // Create Redis Client
 // let client = redis.createClient();
-let client = redis.createClient(6380, process.env.REDISCACHEHOSTNAME,
+var client = redis.createClient(6380, process.env.REDISCACHEHOSTNAME,
     {auth_pass: process.env.REDISCACHEKEY, tls: {servername: process.env.REDISCACHEHOSTNAME}});
 
 client.on('connect', function(){
@@ -19,10 +19,10 @@ client.on('connect', function(){
 });
 
 // Set Port
-const port = 5000;
+var port = 5000;
 
 // Init app
-const app = express();
+var app = express();
 
 // View Engine
 app.engine('handlebars', exphbs({defaultLayout:'main'}));
@@ -43,7 +43,7 @@ app.get('/', function(req, res, next){
 
 // Check processing
 app.post('/reserve/check', function(req, res, next){
-  let id = req.body.id;
+  var id = req.body.id;
   client.get(id, function(err, obj){
     if(!obj){
       res.render('searchreserve',{
