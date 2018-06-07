@@ -1,65 +1,60 @@
-const express = require('express');
-const exphbs = require('express-handlebars');
-const path = require('path');
-const bodyParser = require('body-parser');
-const methodOverride = require('method-override');
-const redis = require('redis');
+var express = require('express');
+var path = require('path');
+var favicon = require('serve-favicon');
+var logger = require('morgan');
+var cookieParser = require('cookie-parser');
+var bodyParser = require('body-parser');
 
-process.env['REDISCACHEHOSTNAME']='Reserve.redis.cache.windows.net';
-process.env['REDISCACHEKEY']='CuXrxyeDtPr80qkwgCUFhOvHWBbyyb+IVcSrrTKlbBs=';
-// set REDISCACHEKEY=CuXrxyeDtPr80qkwgCUFhOvHWBbyyb+IVcSrrTKlbBs=;
+var routes = require('./routes/index');
+var users = require('./routes/users');
 
-// Create Redis Client
-// let client = redis.createClient();
-let client = redis.createClient(6380, process.env.REDISCACHEHOSTNAME,
-    {auth_pass: process.env.REDISCACHEKEY, tls: {servername: process.env.REDISCACHEHOSTNAME}});
+var app = express();
 
-client.on('connect', function(){
-  console.log('Connected to Redis');
-});
+// view engine setup
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'jade');
 
-// Set Port
-const port = 5000;
-
-// Init app
-const app = express();
-
-// View Engine
-app.engine('handlebars', exphbs({defaultLayout:'main'}));
-app.set('view engine', 'handlebars');
-
-// body-Parser
+// uncomment after placing your favicon in /public
+//app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
+app.use(logger('dev'));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended:false}));
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(cookieParser());
+app.use(express.static(path.join(__dirname, 'public')));
 
-// methodOverride
-app.use(methodOverride('_method'));
+app.use('/', routes);
+app.use('/users', users);
 
-// Home Page
-app.get('/', function(req, res, next){
-  client.set("51", "koichi" );
-  res.render('searchreserve');
+// catch 404 and forward to error handler
+app.use(function(req, res, next) {
+  var err = new Error('Not Found');
+  err.status = 404;
+  next(err);
 });
 
-// Check processing
-app.post('/reserve/check', function(req, res, next){
-  let id = req.body.id;
-  client.get(id, function(err, obj){
-    if(!obj){
-      res.render('searchreserve',{
-        error: 'Staff not exist'
-      });
-    }
-    else{
-      obj.id = id;
-      res.render('reservedetails',{
-        user: obj
-      });
-    }
+// error handlers
+
+// development error handler
+// will print stacktrace
+if (app.get('env') === 'development') {
+  app.use(function(err, req, res, next) {
+    res.status(err.status || 500);
+    res.render('error', {
+      message: err.message,
+      error: err
+    });
   });
+}
 
+// production error handler
+// no stacktraces leaked to user
+app.use(function(err, req, res, next) {
+  res.status(err.status || 500);
+  res.render('error', {
+    message: err.message,
+    error: {}
+  });
 });
 
-app.listen(port, function(){
-  console.log('Server started on port '+port);
-});
+
+module.exports = app;
