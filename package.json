@@ -1,14 +1,17 @@
 {
-  "name": "reditreserve",
-  "version": "1.0.0",
-  "description": "reserve checking app",
-  "main": "app.js",
+  "name": "nodejs-get-started",
+  "version": "0.0.0",
+  "private": true,
   "scripts": {
-    "start": "nodemon -e css,ejs,js,json app.js"
+    "start": "node ./bin/www"
   },
-  "author": "shishan",
-  "license": "ISC",
-  "devDependencies": {
-    "nodemon": "^1.17.5"
+  "dependencies": {
+    "body-parser": "~1.13.2",
+    "cookie-parser": "~1.3.5",
+    "debug": "~2.2.0",
+    "express": "~4.13.1",
+    "jade": "~1.11.0",
+    "morgan": "~1.6.1",
+    "serve-favicon": "~2.3.0"
   }
 }
